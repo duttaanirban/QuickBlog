@@ -4,6 +4,7 @@ import { assets, blog_data, comments_data } from "../assets/assets.js";
 import Navbar from "../components/Navbar.jsx";
 import Moment from "moment";
 import Footer from "../components/Footer.jsx";
+import Loader from "../components/Loader.jsx";
 
 
 const BlogPage = () => {
@@ -31,16 +32,8 @@ const BlogPage = () => {
     fetchBlogData();
     fetchComments();
   }, [id]);
-
-  if (data === undefined) {
-    return <div>Blog not found.</div>;
-  }
-  if (data === null) {
-    return <div>Loading...</div>;
-  }
-
   
-  return (
+  return data ? (
     <div className="relative">
       <img src={assets.gradientBackground} alt="" className="absolute -top-50 -z-1 opacity-50" />
       <Navbar />
@@ -102,6 +95,8 @@ const BlogPage = () => {
       </div>
       <Footer />
     </div>
+  ) : (
+    <Loader />
   );
 }
 
