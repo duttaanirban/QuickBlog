@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { assets, blog_data, comments_data } from "../assets/assets.js";
 import Navbar from "../components/Navbar.jsx";
 import Moment from "moment";
+import Footer from "../components/Footer.jsx";
 
 
 const BlogPage = () => {
@@ -11,8 +12,15 @@ const BlogPage = () => {
   const [data, setData] = useState(null);
   const [comments, setComments] = useState([]);
 
+  const [name, setName] = useState("");
+  const [content, setContent] = useState("");
+
   const fetchComments = async () => {
     setComments(comments_data);
+  }
+
+  const addComment = async (e) => {
+    e.preventDefault();
   }
 
   useEffect(() => {
@@ -30,6 +38,8 @@ const BlogPage = () => {
   if (data === null) {
     return <div>Loading...</div>;
   }
+
+  
   return (
     <div className="relative">
       <img src={assets.gradientBackground} alt="" className="absolute -top-50 -z-1 opacity-50" />
@@ -66,10 +76,33 @@ const BlogPage = () => {
               ))}
             </div>
 
+            <div className="max-w-3xl mx-auto">
+                <p className="font-semibold mb-4 mt-4">Add your comment</p>
+                <form onSubmit={addComment} className="flex flex-col items-start gap-4 max-w-lg">
+                  <input onChange={(e) => setName(e.target.value)} value={name} type="text" placeholder="Name" className="w-full p-2 border border-gray-300 rounded outline-none" />
+
+                  <textarea onChange={(e) => setContent(e.target.value)} value={content} placeholder="Comment" className="w-full p-2 border border-gray-300 rounded outline-none h-48" required></textarea>
+
+                  <button type="submit" className="bg-primary text-white rounded p-2
+                  px-8 hover:scale-102 transition-all cursor-pointer">Submit</button>
+
+                </form>
+            </div>
+
+            <div className="my-24 max-w-3xl mx-auto">
+                <p className="font-semibold my-4">Share this article on social media</p>
+                <div className="flex">
+                    <img src={assets.facebook_icon} width={50} alt="facebook" className="cursor-pointer"/>
+                    <img src={assets.twitter_icon} width={50} alt="twitter" className="cursor-pointer"/>
+                    <img src={assets.googleplus_icon} width={50} alt="googleplus" className="cursor-pointer"/>
+                </div>
+            </div>
+
         </div>
       </div>
+      <Footer />
     </div>
   );
 }
 
-export default BlogPage
+export default BlogPage;
