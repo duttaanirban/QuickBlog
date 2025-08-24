@@ -1,3 +1,4 @@
+/* eslint-disable no-constant-condition */
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage.jsx'
 import BlogPage from './pages/BlogPage.jsx'
@@ -15,7 +16,7 @@ const App = () => {
       <Route path="/" element={<HomePage />} />
       <Route path="/blog/:id" element={<BlogPage />} />
       // eslint-disable-next-line no-constant-condition, no-constant-condition, no-constant-condition
-      <Route path="/admin" element={false ? <Layout /> : <Login />}>
+      <Route path="/admin" element={true ? <Layout /> : <Login />}>
         <Route index element={<Dashboard />} />
         <Route path='addBlog' element={<AddBlog />} />
         <Route path='listBlog' element={<ListBlog />} />
