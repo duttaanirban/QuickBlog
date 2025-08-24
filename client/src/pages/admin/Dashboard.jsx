@@ -63,7 +63,7 @@ const Dashboard = () => {
           <table className='w-full text-sm text-gray-500'>
             <thead className='text-xs text-gray-600 text-left uppercase'>
               <tr>
-                <th scope='col' className='px-2 py-4 xl:px-6'>#</th>
+                <th scope='col' className='px-2 py-4 xl:px-6'>SNo.</th>
                 <th scope='col' className='px-2 py-4'>Blog Title</th>
                 <th scope='col' className='px-2 py-4 max-sm:hidden'>Date</th>
                 <th scope='col' className='px-2 py-4 max-sm:hidden'>Status</th>
@@ -72,7 +72,7 @@ const Dashboard = () => {
             </thead>
             <tbody>
               {dashboardData.recentBlogs.map((blog, index) => {
-                return <BlogTableItem key={blog._id} blog={blog} fetchBlogs={fetchDashboardData} index={index} />;
+                return <BlogTableItem key={blog._id} blog={blog} fetchBlogs={fetchDashboardData} index={index + 1} />;
               })}
             </tbody>
           </table>
