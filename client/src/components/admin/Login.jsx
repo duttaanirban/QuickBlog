@@ -1,9 +1,12 @@
+import { useState } from "react";
 import emailIcon from "../../assets/email_icon.png";
 import userIcon from "../../assets/user_icon.svg";
 
+
 const Login = () => {
 
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -18,12 +21,12 @@ const Login = () => {
             <h1 className='text-3xl font-bold'><span className='text-primary'>Admin</span> Login</h1>
             <p className='font-light'>Enter your credentials to access the admin panel</p>
           </div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={handleSubmit} className="mt-6 w-full sm:max-w-md text-gray-600">
               <div className="flex flex-col mb-6">
                 <label>Email</label>
                 <div className="relative flex items-center">
                   <img src={emailIcon} alt="email icon" className="w-5 h-5 absolute left-3" />
-                  <input type="email" required placeholder="Enter your email id"
+                  <input onChange={(e) => setEmail(e.target.value)} value={email} type="email" required placeholder="Enter your email id"
                     className="border border-b-2 border-gray-300 p-3 pl-10 outline-none w-full" />
                 </div>
               </div>
@@ -31,11 +34,12 @@ const Login = () => {
                 <label>Password</label>
                 <div className="relative flex items-center">
                   <img src={userIcon} alt="password icon" className="w-5 h-5 absolute left-3" />
-                  <input type="password" required placeholder="Enter your password"
+                  <input onChange={(e) => setPassword(e.target.value)} value={password} type="password" required placeholder="Enter your password"
                     className="border border-b-2 border-gray-300 p-3 pl-10 outline-none w-full" />
                 </div>
               </div>
-              <button type="submit" className="w-full py-3 font-medium bg-primary text-white rounded cursor-pointer hover:bg-primary/90 transition-all">Login</button>
+              <button type="submit" className="w-full py-3 font-medium bg-primary text-white rounded cursor-pointer 
+              hover:bg-primary/90 transition-all">Login</button>
           </form>
         </div>
       </div>
