@@ -7,4 +7,7 @@ const blogRouter = e.Router();
 
 blogRouter.post("/add", upload.single("image"), auth, addBlog);
 
+
+
+
 export default blogRouter;
