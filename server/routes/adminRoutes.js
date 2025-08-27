@@ -11,8 +11,8 @@ adminRouter.post("/login", adminLogin);
 adminRouter.get("/blogs", auth, getAllBlogsAdmin);
 adminRouter.get("/comments", auth, getAllComments);
 adminRouter.get("/dashboard", auth, getDashboardStats);
-adminRouter.delete("/comments/:id", auth, deleteCommentById);
-adminRouter.put("/comments/:id/approve", auth, approveCommentById);
+adminRouter.delete("/delete-comment", auth, deleteCommentById);
+adminRouter.put("/approve-comment", auth, approveCommentById);
 
 export default adminRouter;
 
