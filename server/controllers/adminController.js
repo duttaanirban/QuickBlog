@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import Blog from '../models/Blog.js';
+import Comment from '../models/Comment.js';
 
 export const adminLogin = async (req, res) => {
   try {
@@ -13,5 +15,57 @@ export const adminLogin = async (req, res) => {
 
   } catch (error) {
     return res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const getAllBlogsAdmin = async (req, res) => {
+  try {
+    const blogs = await Blog.find({}).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: blogs });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching blogs", error: error.message });
+  }
+};
+
+export const getAllComments = async (req, res) => {
+  try {
+    const comments = await Comment.find({}).populate("blog").sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: comments });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching comments", error: error.message });
+  }
+};
+
+export const getDashboardStats = async (req, res) => {
+  try {
+    const recentBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(5);
+    const totalBlogs = await Blog.countDocuments();
+    const totalComments = await Comment.countDocuments();
+    const drafts = await Blog.find({ isPublished: false }).countDocuments();
+
+    const dashboardData = { totalBlogs, totalComments, drafts, recentBlogs };
+    res.status(200).json({ success: true, message: "Dashboard stats fetched successfully", data: dashboardData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching dashboard stats", error: error.message });
+  }
+};
+
+export const deleteCommentById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Comment.findByIdAndDelete(id);
+    res.status(200).json({ success: true, message: "Comment deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error deleting comment", error: error.message });
+  }
+};
+
+export const approveCommentById = async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Comment.findByIdAndUpdate(id, { isApproved: true });
+    res.status(200).json({ success: true, message: "Comment approved successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error approving comment", error: error.message });
   }
 };
