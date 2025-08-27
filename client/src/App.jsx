@@ -9,16 +9,21 @@ import ListBlog from './pages/admin/ListBlog.jsx'
 import Comments from './pages/admin/Comments.jsx'
 import Login from './components/admin/Login.jsx'
 import 'quill/dist/quill.snow.css';
-
+import {Toaster} from 'react-hot-toast'
+import { useAppContext } from './context/AppContext.jsx'
 
 const App = () => {
+
+  const { token } = useAppContext();
+
   return (
     <>
+    <Toaster />
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/blog/:id" element={<BlogPage />} />
       // eslint-disable-next-line no-constant-condition, no-constant-condition, no-constant-condition
-      <Route path="/admin" element={true ? <Layout /> : <Login />}>
+      <Route path="/admin" element={token ? <Layout /> : <Login />}>
         <Route index element={<Dashboard />} />
         <Route path='addBlog' element={<AddBlog />} />
         <Route path='listBlog' element={<ListBlog />} />
