@@ -43,7 +43,7 @@ export const addBlog = async (req, res) => {
 export const getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find({isPublished: true});
-        res.status(200).json({ success: true, data: blogs });
+        res.status(200).json({ success: true, blogs });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error fetching blogs", error: error.message });
     }
@@ -56,7 +56,7 @@ export const getBlogById = async (req, res) => {
         if (!blog || !blog.isPublished) {
             return res.status(404).json({ success: false, message: "Blog not found" });
         }
-        res.status(200).json({ success: true, data: blog });
+        res.status(200).json({ success: true, blog });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error fetching blog", error: error.message });
     }
@@ -85,7 +85,7 @@ export const togglePublishBlog = async (req, res) => {
         }
         blog.isPublished = !blog.isPublished;
         await blog.save();
-        res.status(200).json({ success: true, message: "Blog updated successfully", data: blog });
+        res.status(200).json({ success: true, message: "Blog updated successfully", blog });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error updating blog", error: error.message });
     }
@@ -95,7 +95,7 @@ export const addComment = async (req, res) => {
     try {
         const { blog, name, content } = req.body;
         await Comment.create({ blog, name, content });
-        res.status(201).json({ success: true, message: "Comment added successfully", data: blog });
+        res.status(201).json({ success: true, message: "Comment added successfully", blog });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error adding comment", error: error.message });
     }
@@ -108,7 +108,7 @@ export const getBlogComments = async (req, res) => {
             return res.status(400).json({ success: false, message: "blogId is required" });
         }
         const comments = await Comment.find({ blog: blogId, isApproved: true }).sort({ createdAt: -1 });
-        res.status(200).json({ success: true, data: comments });
+        res.status(200).json({ success: true, comments });
     } catch (error) {
         res.status(500).json({ success: false, message: "Error fetching comments", error: error.message });
     }

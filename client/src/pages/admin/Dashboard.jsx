@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
-import { assets, dashboard_data } from '../../assets/assets'
+import { assets} from '../../assets/assets'
 import BlogTableItem from '../../components/admin/BlogTableItem.jsx';
+import { useAppContext } from '../../context/AppContext.jsx';
 
 const Dashboard = () => {
 
@@ -11,9 +12,18 @@ const Dashboard = () => {
     recentBlogs: [],
   });
 
+  const {axios} = useAppContext();
+
   const fetchDashboardData = async () => {
+    try {
+      const {data} = await axios.get(`/api/admin/dashboard`);
+      if (data.success) {
+        setDashboardData(data.dashboardData);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error.message);
+    }
     
-    setDashboardData(dashboard_data);
   };
 
   useEffect(() => {
