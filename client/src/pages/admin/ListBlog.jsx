@@ -13,7 +13,7 @@ const ListBlog = () => {
     try {
       const {data} = await axios.get('/api/admin/blogs');
       if (data.success) {
-        setBlogs(data.data);
+        setBlogs(data.blogs);
       } else {
         toast.error("Error fetching blogs");
         console.error("Error fetching blogs:", data.message);
