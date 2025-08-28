@@ -1,8 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { assets, blogCategories } from "../../assets/assets"
 import Quill from "quill";
+import { useAppContext } from "../../context/AppContext";
+import toast from "react-hot-toast";
 
 const AddBlog = () => {
+
+  const {axios} = useAppContext();
+  const [isAdding, setIsAdding] = useState(false);
 
   const editorRef = useRef(null);
   const quillRef = useRef(null);
@@ -19,7 +24,38 @@ const AddBlog = () => {
   }
   
   const onSubmitHandler = async (e) => {
-    e.preventDefault();
+    try {
+      e.preventDefault();
+      setIsAdding(true);
+
+      const blog = {title, subTitle,
+        description: quillRef.current.root.innerHTML,
+        category,
+        isPublished
+      }
+
+      const formData = new FormData();
+      formData.append("blog", JSON.stringify(blog));
+      formData.append("image", image);
+
+      const {data} = await axios.post("/api/blog/add", formData);
+      if (data.success) {
+        toast.success("Blog added successfully!", data.message);
+        setImage(false);
+        setTitle('');
+        quillRef.current.root.innerHTML = '';
+        setCategory('startup');
+      }
+      else {
+        toast.error(data.message || "Error adding blog");
+      }
+
+    } catch (error) {
+      toast.error("Error adding blog", error.message);
+    }
+    finally {
+      setIsAdding(false);
+    }
   }
 
   useEffect(() => {
@@ -74,12 +110,12 @@ const AddBlog = () => {
         <p className="mt-4">Blog Category</p>
         <select name="category"
         value={category}
-        onChange={(e) => setCategory(e.target.value)} 
+        onChange={(e) => setCategory(e.target.value)}
         className="mt-2 px-3 py-2 text-gray-500 border border-gray-300 outline-none rounded">
           <option value="">Select Category</option>
-          {blogCategories.map((item, index) => {
+          {blogCategories.filter(cat => cat !== 'All').map((item, index) => {
             return (
-              <option key={index} value={item.value}>{item.label}</option>
+              <option key={index} value={item}>{item}</option>
             )
           })}
         </select>
@@ -89,8 +125,10 @@ const AddBlog = () => {
           <input type="checkbox" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} className="scale-125 cursor-pointer"/>
         </div>
 
-        <button type="submit" className="mt-8 w-40 h-10 bg-primary text-white
-        rounded cursor-pointer text-sm">Add Blog</button>
+        <button disabled={isAdding} type="submit" className="mt-8 w-40 h-10 bg-primary text-white
+        rounded cursor-pointer text-sm">
+          {isAdding ? "Adding..." : "Add Blog"}
+        </button>
       </div>
     </form>
   )
