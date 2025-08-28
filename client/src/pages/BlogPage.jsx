@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { assets, blog_data, comments_data } from "../assets/assets.js";
+import { assets } from "../assets/assets.js";
 import Navbar from "../components/Navbar.jsx";
 import Moment from "moment";
 import Footer from "../components/Footer.jsx";
 import Loader from "../components/Loader.jsx";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 
 const BlogPage = () => {
@@ -16,19 +18,42 @@ const BlogPage = () => {
   const [name, setName] = useState("");
   const [content, setContent] = useState("");
 
+  const fetchBlogData = async () => {
+    try {
+      const {data} = await axios.get(`/api/blog/${id}`);
+      data.success ? setData(data.data) : toast.error("Error fetching blog data:", data.message);
+    } catch (error) {
+      toast.error("Error fetching blog data:", error);
+    }
+  };
+
   const fetchComments = async () => {
-    setComments(comments_data);
+    try {
+      // Use GET with query param, and expect data.data for comments
+      const {data} = await axios.get(`/api/blog/comments?blogId=${id}`);
+  data.success ? setComments(data.data) : toast.error("Error fetching comments:", data.message);
+    } catch (error) {
+      toast.error("Error fetching comments:", error.message || error);
+    }
   }
 
   const addComment = async (e) => {
     e.preventDefault();
+    try {
+      const {data} = await axios.post('/api/blog/add-comment', {blog: id, name, content});
+      if (data.success) {
+        toast.success("Comment added successfully");
+        setName("");
+        setContent("");
+      } else {
+        toast.error("Error adding comment:", data.message);
+      }
+    } catch (error) {
+      toast.error("Error adding comment:", error.message);
+    }
   }
 
   useEffect(() => {
-    const fetchBlogData = async () => {
-      const data = blog_data.find((item) => item._id === id);
-      setData(data);
-    };
     fetchBlogData();
     fetchComments();
   }, [id]);
