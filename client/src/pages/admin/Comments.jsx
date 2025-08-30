@@ -12,25 +12,22 @@ const Comments = () => {
   const {axios, token} = useAppContext();
   const fetchComments = useCallback(async () => {
     try {
-      console.log('Admin token being sent:', token);
       const {data} = await axios.get('/api/admin/comments');
       if (data.success) {
         setComments(data.comments);
       } else {
         toast.error("Error fetching comments: " + data.message);
-        console.error('Backend error:', data);
       }
     } catch (error) {
-      toast.error("Error fetching comments: " + (error.response?.data?.message || error.message));
-      console.error('Axios error:', error);
+        toast.error("Error fetching comments: " + (error.response?.data?.message || error.message));
     }
-  }, [axios, token]);
+  }, [axios]);
 
   useEffect(() => {
     if (token) {
       fetchComments();
     }
-  }, [token, fetchComments]);
+  }, [token]);
 
 
   return (

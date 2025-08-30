@@ -104,7 +104,6 @@ export const addComment = async (req, res) => {
 export const getBlogComments = async (req, res) => {
     try {
         const blogId = req.query.blogId;
-        console.log('Fetching comments for blogId:', blogId);
         if (!blogId) {
             return res.status(400).json({ success: false, message: "blogId is required" });
         }

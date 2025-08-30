@@ -27,21 +27,18 @@ export const AppProvider = ({ children }) => {
     };
 
 
-    useEffect(() => {
-      fetchBlogs();
-      const storedToken = localStorage.getItem("token");
-      if (storedToken) {
-        setToken(storedToken);
-      } else {
-        setLoading(false);
-      }
-    }, []);
 
     useEffect(() => {
-      if (token !== null) {
+      const initialize = async () => {
+        await fetchBlogs();
+        const storedToken = localStorage.getItem("token");
+        if (storedToken) {
+          setToken(storedToken);
+        }
         setLoading(false);
-      }
-    }, [token]);
+      };
+      initialize();
+    }, []);
 
     // Always set axios Authorization header when token changes
     useEffect(() => {
@@ -53,16 +50,10 @@ export const AppProvider = ({ children }) => {
     }, [token]);
 
   if (loading) return <Loader />;
-  // Logout function: clears token everywhere
-  const logout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-    delete axios.defaults.headers.common["Authorization"];
-    navigate("/admin"); // redirect to login or admin page
-  };
+  
 
   return (
-    <AppContext.Provider value={{ axios, token, setToken, navigate, blogs, setBlogs, input, setInput, fetchBlogs, logout }}>
+    <AppContext.Provider value={{ axios, token, setToken, navigate, blogs, setBlogs, input, setInput, fetchBlogs}}>
       {children}
     </AppContext.Provider>
   );

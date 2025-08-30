@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { assets} from '../../assets/assets'
 import BlogTableItem from '../../components/admin/BlogTableItem.jsx';
 import { useAppContext } from '../../context/AppContext.jsx';
@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   const {axios, token} = useAppContext();
 
-  const fetchDashboardData = async () => {
+  const fetchDashboardData = useCallback(async () => {
     try {
       const {data} = await axios.get(`/api/admin/dashboard`);
       if (data.success) {
@@ -23,14 +23,13 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching dashboard data:", error.message);
     }
-    
-  };
+  }, [axios]);
 
   useEffect(() => {
     if (token) {
       fetchDashboardData();
     }
-  }, [token]);
+  }, [token, fetchDashboardData]);
 
   return (
     <div className='flex-1 p-4 md:p-10 bg-blue-50/50'>
