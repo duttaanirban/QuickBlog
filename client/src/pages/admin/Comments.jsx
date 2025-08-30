@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback } from "react"
 import CommentTableItems from "../../components/admin/CommentTableItems";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
@@ -9,19 +9,28 @@ const Comments = () => {
   const [comments, setComments] = useState([]);
   const [filter, setFilter] = useState("Not Approved");
 
-  const {axios} = useAppContext();
-  const fetchComments = async () => {
+  const {axios, token} = useAppContext();
+  const fetchComments = useCallback(async () => {
     try {
+      console.log('Admin token being sent:', token);
       const {data} = await axios.get('/api/admin/comments');
-      data.success ? setComments(data.comments) : toast.error("Error fetching comments:", data.message);
+      if (data.success) {
+        setComments(data.comments);
+      } else {
+        toast.error("Error fetching comments: " + data.message);
+        console.error('Backend error:', data);
+      }
     } catch (error) {
-      toast.error("Error fetching comments:", error.message);
+      toast.error("Error fetching comments: " + (error.response?.data?.message || error.message));
+      console.error('Axios error:', error);
     }
-  }
+  }, [axios, token]);
 
   useEffect(() => {
-    fetchComments();
-  }, []);
+    if (token) {
+      fetchComments();
+    }
+  }, [token, fetchComments]);
 
 
   return (

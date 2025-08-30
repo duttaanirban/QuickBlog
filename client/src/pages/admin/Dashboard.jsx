@@ -12,7 +12,7 @@ const Dashboard = () => {
     recentBlogs: [],
   });
 
-  const {axios} = useAppContext();
+  const {axios, token} = useAppContext();
 
   const fetchDashboardData = async () => {
     try {
@@ -27,8 +27,10 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    fetchDashboardData();
-  });
+    if (token) {
+      fetchDashboardData();
+    }
+  }, [token]);
 
   return (
     <div className='flex-1 p-4 md:p-10 bg-blue-50/50'>

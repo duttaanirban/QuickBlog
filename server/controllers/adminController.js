@@ -33,6 +33,7 @@ export const getAllComments = async (req, res) => {
     const comments = await Comment.find({}).populate("blog").sort({ createdAt: -1 });
     res.status(200).json({ success: true, comments });
   } catch (error) {
+    console.error("Error in getAllComments:", error); // Add this line
     res.status(500).json({ success: false, message: "Error fetching comments", error: error.message });
   }
 };

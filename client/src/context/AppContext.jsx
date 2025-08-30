@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import Loader from "../components/Loader";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -10,9 +11,10 @@ export const AppProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
-    const [token, setToken] = useState(null);
-    const [blogs, setBlogs] = useState(null);
-    const [input, setInput] = useState("");
+  const [token, setToken] = useState(null);
+  const [blogs, setBlogs] = useState(null);
+  const [input, setInput] = useState("");
+  const [loading, setLoading] = useState(true);
 
     const fetchBlogs = async () => {
       try {
@@ -24,15 +26,33 @@ export const AppProvider = ({ children }) => {
       }
     };
 
+
     useEffect(() => {
       fetchBlogs();
-      const token = localStorage.getItem("token");
-      if (token) {
-        setToken(token);
-        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        setToken(storedToken);
+      } else {
+        setLoading(false);
       }
     }, []);
 
+    useEffect(() => {
+      if (token !== null) {
+        setLoading(false);
+      }
+    }, [token]);
+
+    // Always set axios Authorization header when token changes
+    useEffect(() => {
+      if (token) {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+      } else {
+        delete axios.defaults.headers.common["Authorization"];
+      }
+    }, [token]);
+
+  if (loading) return <Loader />;
   return (
     <AppContext.Provider value={{ axios, token, setToken, navigate, blogs, setBlogs, input, setInput, fetchBlogs }}>
       {children}
