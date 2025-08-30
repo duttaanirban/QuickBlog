@@ -3,11 +3,13 @@ import { assets, blogCategories } from "../../assets/assets"
 import Quill from "quill";
 import { useAppContext } from "../../context/AppContext";
 import toast from "react-hot-toast";
+import {parse} from 'marked';
 
 const AddBlog = () => {
 
   const {axios} = useAppContext();
   const [isAdding, setIsAdding] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const editorRef = useRef(null);
   const quillRef = useRef(null);
@@ -20,7 +22,24 @@ const AddBlog = () => {
 
   const generateContent = async () => {
     // Call your AI content generation API here
-    
+    if (!title || !subTitle) {
+      toast.error("Title and SubTitle are required");
+      return;
+    }
+    try {
+      setLoading(true);
+      const {data} = await axios.post('/api/blog/generate-content', { prompt: title});
+      if (data.success) {
+        quillRef.current.root.innerHTML = parse(data.content);
+      } else {
+        toast.error(data.message || "Error generating content");
+      }
+    } catch (error) {
+      toast.error("Error generating content", error.message);
+    }
+    finally {
+      setLoading(false);
+    }
   }
   
   const onSubmitHandler = async (e) => {
@@ -104,7 +123,7 @@ const AddBlog = () => {
           <div ref={editorRef}>
 
           </div>
-          <button className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5
+          <button disabled={loading} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5
           rounded hover:underline cursor-pointer' type="button" onClick={generateContent}>Generate with AI</button>
         </div>
         <p className="mt-4">Blog Category</p>
