@@ -53,8 +53,16 @@ export const AppProvider = ({ children }) => {
     }, [token]);
 
   if (loading) return <Loader />;
+  // Logout function: clears token everywhere
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken(null);
+    delete axios.defaults.headers.common["Authorization"];
+    navigate("/admin"); // redirect to login or admin page
+  };
+
   return (
-    <AppContext.Provider value={{ axios, token, setToken, navigate, blogs, setBlogs, input, setInput, fetchBlogs }}>
+    <AppContext.Provider value={{ axios, token, setToken, navigate, blogs, setBlogs, input, setInput, fetchBlogs, logout }}>
       {children}
     </AppContext.Provider>
   );
