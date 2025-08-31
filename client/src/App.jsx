@@ -11,10 +11,13 @@ import Login from './components/admin/Login.jsx'
 import 'quill/dist/quill.snow.css';
 import {Toaster} from 'react-hot-toast'
 import { useAppContext } from './context/AppContext.jsx'
+import Loader from './components/Loader';
 
 const App = () => {
 
-  const { token } = useAppContext();
+  const { token, loading } = useAppContext();
+
+  if (loading) return <Loader />;
 
   return (
     <>
@@ -22,7 +25,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/blog/:id" element={<BlogPage />} />
-      // eslint-disable-next-line no-constant-condition, no-constant-condition, no-constant-condition
+      {/* eslint-disable-next-line no-constant-condition, no-constant-condition, no-constant-condition */}
       <Route path="/admin" element={token ? <Layout /> : <Login />}>
         <Route index element={<Dashboard />} />
         <Route path='addBlog' element={<AddBlog />} />

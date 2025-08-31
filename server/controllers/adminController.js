@@ -21,7 +21,6 @@ export const adminLogin = async (req, res) => {
 export const getAllBlogsAdmin = async (req, res) => {
   try {
     const blogs = await Blog.find({}).sort({ createdAt: -1 });
-    console.log("All Blogs:", blogs);
     res.status(200).json({ success: true, blogs });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching blogs", error: error.message });
@@ -41,18 +40,18 @@ export const getAllComments = async (req, res) => {
 export const getDashboardStats = async (req, res) => {
   try {
     const recentBlogs = await Blog.find({}).sort({ createdAt: -1 }).limit(5);
-    const totalBlogs = await Blog.countDocuments();
-    const totalComments = await Comment.countDocuments();
-    const drafts = await Blog.find({ isPublished: false }).countDocuments();
+    const blogs = await Blog.countDocuments();
+    const comments = await Comment.countDocuments();
+    const drafts = await Blog.countDocuments({ isPublished: false });
 
     const dashboardData = {
-      blogs: totalBlogs,
-      comments: totalComments,
+      blogs,
+      comments,
       drafts,
       recentBlogs
     };
     console.log("Dashboard Data:", dashboardData);
-  res.status(200).json({ success: true, message: "Dashboard stats fetched successfully", dashboardData });
+    res.status(200).json({ success: true, message: "Dashboard stats fetched successfully", dashboardData });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching dashboard stats", error: error.message });
   }

@@ -7,9 +7,14 @@ const Header = () => {
   const {setInput, input} = useAppContext();
   const inputRef = useRef();
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
     setInput(inputRef.current.value);
+  }
+
+  const onClear = () => {
+    setInput("");
+    inputRef.current.value = "";
   }
 
   return (
@@ -35,7 +40,7 @@ const Header = () => {
             </form>
         </div>
         <div className='text-center'>
-          {input && <button onClick={() => setInput('')} className='border font-light text-xs py-1 px-3 rounded-sm
+          {input && <button onClick={onClear} className='border font-light text-xs py-1 px-3 rounded-sm
           shadow-custom-sm cursor-pointer'>Clear search</button>}
         </div>
         <img src={assets.gradientBackground} alt="" className='absolute -top-50 -z-10

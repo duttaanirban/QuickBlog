@@ -11,22 +11,19 @@ export const AppProvider = ({ children }) => {
 
     const navigate = useNavigate();
 
-  const [token, setToken] = useState(null);
-  const [blogs, setBlogs] = useState(null);
-  const [input, setInput] = useState("");
-  const [loading, setLoading] = useState(true);
+    const [token, setToken] = useState(null);
+    const [blogs, setBlogs] = useState(null);
+    const [input, setInput] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const fetchBlogs = async () => {
       try {
         const {data} = await axios.get("/api/blog/all");
         data.success ? setBlogs(data.blogs) : toast.error(data.message);
       } catch (error) {
-        toast.error("Error fetching blogs");
-        console.error("Error fetching blogs:", error);
+        toast.error(error.message);
       }
     };
-
-
 
     useEffect(() => {
       const initialize = async () => {
@@ -34,6 +31,7 @@ export const AppProvider = ({ children }) => {
         const storedToken = localStorage.getItem("token");
         if (storedToken) {
           setToken(storedToken);
+          axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
         }
         setLoading(false);
       };

@@ -23,8 +23,7 @@ const BlogTableItem = ({blog, fetchBlogs, index}) => {
           toast.error("Error deleting blog");
         }
       } catch (error) {
-        toast.error("Error deleting blog");
-        console.error("Error deleting blog:", error.message);
+        toast.error("Error deleting blog", error.message);
       }
     }
 
@@ -32,14 +31,13 @@ const BlogTableItem = ({blog, fetchBlogs, index}) => {
       try {
         const {data} = await axios.post(`/api/blog/toggle-publish`, {id: blog._id});
         if (data.success) {
-          toast.success("Blog updated successfully!");
+          toast.success("Blog published successfully!");
           await fetchBlogs();
         } else {
-          toast.error("Error updating blog");
+          toast.error("Error publishing blog");
         }
       } catch (error) {
-        toast.error("Error updating blog");
-        console.error("Error updating blog:", error.message);
+        toast.error("Error publishing blog", error.message);
       }
     }
 

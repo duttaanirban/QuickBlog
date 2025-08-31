@@ -20,20 +20,20 @@ const BlogPage = () => {
 
   const fetchBlogData = async () => {
     try {
-  const {data} = await axios.get(`/api/blog/${id}`);
-  data.success ? setData(data.blog) : toast.error("Error fetching blog data:", data.message);
+    const {data} = await axios.get(`/api/blog/${id}`);
+    data.success ? setData(data.blog) : toast.error("Error fetching blog data:", data.message);
     } catch (error) {
-      toast.error("Error fetching blog data:", error);
+      toast.error("Error fetching blog data:", error.message);
     }
   };
 
   const fetchComments = async () => {
     try {
       // Use GET with query param, and expect data.data for comments
-      const {data} = await axios.get(`/api/blog/comments?blogId=${id}`);
-  data.success ? setComments(data.comments) : toast.error("Error fetching comments:", data.message);
+      const {data} = await axios.post('/api/blog/comments', {blogId: id});
+      data.success ? setComments(data.comments) : toast.error("Error fetching comments:", data.message);
     } catch (error) {
-      toast.error("Error fetching comments:", error.message || error);
+      toast.error("Error fetching comments:", error.message);
     }
   }
 
@@ -56,7 +56,7 @@ const BlogPage = () => {
   useEffect(() => {
     fetchBlogData();
     fetchComments();
-  });
+  }, []);
   
   return data ? (
     <div className="relative">

@@ -1,7 +1,9 @@
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { assets} from '../../assets/assets'
 import BlogTableItem from '../../components/admin/BlogTableItem.jsx';
 import { useAppContext } from '../../context/AppContext.jsx';
+import Loader from '../../components/Loader';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
 
@@ -12,28 +14,36 @@ const Dashboard = () => {
     recentBlogs: [],
   });
 
-  const {axios, token} = useAppContext();
+  const {axios, token, loading} = useAppContext();
+  console.log('Dashboard token:', token);
 
-  const fetchDashboardData = useCallback(async () => {
+  const fetchDashboardData = async () => {
+    console.log('fetchDashboardData called');
     try {
-      const {data} = await axios.get(`/api/admin/dashboard`);
+      const response = await axios.get('/api/admin/dashboard');
+      console.log('Dashboard API response:', response);
+      const {data} = response;
       if (data.success) {
         setDashboardData(data.dashboardData);
       }
     } catch (error) {
-      console.error("Error fetching dashboard data:", error.message);
+      console.log('Dashboard API error:', error);
+      toast.error("Error fetching dashboard data:", error.message);
     }
-  }, [axios]);
+  }
 
   useEffect(() => {
-    if (token) {
-      fetchDashboardData();
-    }
-  }, [token, fetchDashboardData]);
+    // Only fetch if loading is false and token is set
+    if (loading) return;
+    if (!token) return;
+    fetchDashboardData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, token]);
+
+  if (loading) return <Loader />;
 
   return (
     <div className='flex-1 p-4 md:p-10 bg-blue-50/50'>
-
       <div className='flex flex-wrap gap-4'>
         <div className='flex items-center gap-4 bg-white p-4 min-w-58 rounded-2xl
         shadow cursor-pointer hover:scale-105 transition-all'>

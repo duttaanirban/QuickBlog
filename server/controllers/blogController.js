@@ -33,7 +33,7 @@ export const addBlog = async (req, res) => {
 
         const img = optimizedImage;
 
-        await Blog.create({title, subTitle, category, image: img, isPublished, description});
+        await Blog.create({title, subTitle, category, img, isPublished, description});
 
         res.status(201).json({ success: true, message: "Blog added successfully" });
     } catch (error) {
@@ -52,7 +52,7 @@ export const getAllBlogs = async (req, res) => {
 
 export const getBlogById = async (req, res) => {
     try {
-        const {blogId} = req.params;
+        const { blogId } = req.params;
         const blog = await Blog.findById(blogId);
         if (!blog || !blog.isPublished) {
             return res.status(404).json({ success: false, message: "Blog not found" });
@@ -68,7 +68,7 @@ export const deleteBlogById = async (req, res) => {
         const {id} = req.body;
         await Blog.findByIdAndDelete(id);
 
-        // TODO: Delete associated comments
+        //Delete associated comments
         await Comment.deleteMany({ blog: id });
 
         res.status(200).json({ success: true, message: "Blog deleted successfully" });
@@ -96,7 +96,7 @@ export const addComment = async (req, res) => {
     try {
         const { blog, name, content } = req.body;
         await Comment.create({ blog, name, content, isApproved: false });
-        res.status(201).json({ success: true, message: "Comment added successfully", blog });
+        res.status(201).json({ success: true, message: "Comment added successfully"});
     } catch (error) {
         res.status(500).json({ success: false, message: "Error adding comment", error: error.message });
     }
@@ -104,7 +104,7 @@ export const addComment = async (req, res) => {
 
 export const getBlogComments = async (req, res) => {
     try {
-        const blogId = req.query.blogId;
+        const {blogId} = req.body;
         if (!blogId) {
             return res.status(400).json({ success: false, message: "blogId is required" });
         }
