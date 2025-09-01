@@ -70,7 +70,12 @@ const AddBlog = () => {
       }
 
     } catch (error) {
-      toast.error("Error adding blog", error.message);
+      console.log('Add blog error:', error);
+      if (error.response && error.response.data && error.response.data.message) {
+        toast.error("Error adding blog: " + error.response.data.message);
+      } else {
+        toast.error("Error adding blog", error.message);
+      }
     }
     finally {
       setIsAdding(false);

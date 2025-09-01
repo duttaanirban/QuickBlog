@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { blogCategories } from '../assets/assets.js'
 import Blogcard from './Blogcard.jsx'
 import { useAppContext } from "../context/AppContext.jsx"
+import Loader from "./Loader.jsx"
 
 
 const Bloglist = () => {
@@ -16,7 +17,7 @@ const Bloglist = () => {
         return blogs.filter(blog => blog.title.toLowerCase().includes(input.toLowerCase()) || blog.category.toLowerCase().includes(input.toLowerCase()));
     }
 
-    if (!blogs) return <div>Loading...</div>;
+    if (!blogs) return <Loader />;
     return (
         <div>
             <div className='flex justify-center gap-4 sm:gap-8 my-10 relative'>

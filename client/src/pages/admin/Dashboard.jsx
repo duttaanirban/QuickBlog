@@ -18,6 +18,8 @@ const Dashboard = () => {
   console.log('Dashboard token:', token);
 
   const fetchDashboardData = async () => {
+    // Extra guard: do not fetch if token or header is missing
+    if (!token || !axios.defaults.headers.common["Authorization"]) return;
     console.log('fetchDashboardData called');
     try {
       const response = await axios.get('/api/admin/dashboard');
@@ -33,13 +35,13 @@ const Dashboard = () => {
   }
 
   useEffect(() => {
-    // Only fetch if loading is false and token is set
-    if (loading) return;
-    if (!token) return;
-    fetchDashboardData();
+    if (!loading && token) {
+      fetchDashboardData();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loading, token]);
 
+  if (loading || !token) return <Loader />;
   if (loading) return <Loader />;
 
   return (
